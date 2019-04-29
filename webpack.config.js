@@ -4,7 +4,6 @@ const webpack = require("webpack"); //to access built-in plugins
 
 module.exports = {
   entry: ["./src/index"],
-  bail: true,
   mode: process.env.NODE_ENV || "development",
   devtool: process.env.NODE_ENV ? false : "eval-source-map",
   output: {
@@ -27,9 +26,12 @@ module.exports = {
   },
   devServer: {
     contentBase: "./src",
-    hot: true
+    hot: true,
+    overlay: {
+      warnings: true,
+      errors: true
+    }
   },
-
   optimization: {
     splitChunks: {
       chunks: "all"
