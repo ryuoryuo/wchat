@@ -3,10 +3,13 @@ import styled from "styled-components";
 
 import { Header } from "./Header";
 import { ChatArea } from "./ChatArea";
+import { UsersList } from "./UsersList";
 
 import { loadState, saveState } from "#/lib/localStorage";
 
 import { LoginScreen } from "#/components/LoginScreen";
+
+import { Container } from "#/ui";
 
 
 const ContentWrapper = styled.div`
@@ -23,7 +26,7 @@ export const AppContent = () => {
 
     if (nickname) {
       setIsLogged(true);
-      socket.emit("setNickname", nickname);
+      socket.emit("add user", nickname);
     }
   }, []);
 
@@ -34,6 +37,7 @@ export const AppContent = () => {
   const onLogin = nickname => {
     setNickname(nickname);
     setIsLogged(true);
+    socket.emit("add user", nickname);
   };
 
   if (!isLogged) return <LoginScreen onLogin={onLogin} />;
@@ -41,7 +45,10 @@ export const AppContent = () => {
   return (
     <ContentWrapper>
       <Header />
-      <ChatArea />
+      <Container height="100%">
+        <UsersList />
+        <ChatArea />
+      </Container>
     </ContentWrapper>
   );
 };
