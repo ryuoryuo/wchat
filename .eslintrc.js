@@ -4,9 +4,9 @@ module.exports = {
   extends: "airbnb",
 
   globals: {
-    Atomics: "readonly",
-    SharedArrayBuffer: "readonly",
+    socket: true,
   },
+
   plugins: ["react", "react-hooks"],
   rules: {
     "no-plusplus": [
@@ -68,5 +68,8 @@ module.exports = {
     "react/jsx-filename-extension": "off",
     "react/no-did-update-set-state": "off",
     "react/prop-types": 0,
+  },
+  settings: {
+    "import/resolver": "webpack",
   },
 };
