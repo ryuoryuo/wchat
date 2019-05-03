@@ -15,6 +15,11 @@ module.exports = {
       ? "dist/[name].[chunkhash:8].chunk.js"
       : "dist/[name].chunk.js"
   },
+  resolve: {
+    alias: {
+      "#": path.resolve(__dirname, "src/")
+    }
+  },
   module: {
     rules: [
       {

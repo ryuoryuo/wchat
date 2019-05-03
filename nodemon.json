@@ -1,0 +1,4 @@
+{
+  "signal": "SIGHUP",
+  "watch": ["server.js"]
+}
