@@ -3,18 +3,25 @@ import styled from "styled-components";
 
 import { Field, Container } from "#/ui";
 
+import { TypingStatus } from "./TypingStatus";
+
+import { useDebounce } from "#/lib/hooks";
+
 
 const MessagesList = styled.div`
   width: 100%;
+  display: flex;
+  position: relative;
   background-color: lightcyan;
   overflow: auto;
-  display: flex;
   flex: 1;
+  flex-direction: column;
 `;
 
 export const ChatArea = () => {
   const [inputValue, setInputValue] = useState("");
   const [messageList, setMessageList] = useState([]);
+  const debouncedInputValue = useDebounce(inputValue, 2000);
 
   useEffect(() => {
     fetchMessages();
@@ -24,6 +31,10 @@ export const ChatArea = () => {
     });
   }, []);
 
+  useEffect(() => {
+    socket.emit("typing", false);
+  }, [debouncedInputValue]);
+
   const fetchMessages = async () => {
     try {
       const response = await fetch("http://localhost:3000/messages");
@@ -31,15 +42,19 @@ export const ChatArea = () => {
       const data = await response.json();
 
       setMessageList(data);
-    } catch (error) {
-      console.log(error, "error");
-    }
+    } catch (error) {}
   };
 
   const sendMessage = event => {
     event.preventDefault();
     socket.emit("msg", inputValue);
     setInputValue("");
+  };
+
+  const onFieldChange = ({ target: { value } }) => {
+    setInputValue(value);
+
+    socket.emit("typing", true);
   };
 
   return (
@@ -51,9 +66,10 @@ export const ChatArea = () => {
             <br />
           </>
         ))}
+        <TypingStatus />
       </MessagesList>
       <form onSubmit={sendMessage}>
-        <Field onChange={e => setInputValue(e.target.value)} value={inputValue} />
+        <Field onChange={onFieldChange} value={inputValue} />
       </form>
     </Container>
   );

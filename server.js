@@ -16,6 +16,7 @@ const io = socketio(server);
 
 const users = [];
 const messages = [];
+const typingUsers = {};
 
 router.get("/users", async (ctx, next) => {
   ctx.body = users.length ? users : ["NO USERS"];
@@ -45,10 +46,21 @@ io.on("connection", socket => {
     }
   });
 
-  socket.on("add user", nickname => {
-    username = nickname;
+  socket.on("typing", isTyping => {
+    if (isTyping && !(socket.id in typingUsers)) {
+      typingUsers[socket.id] = username;
+    }
+    if (!isTyping && socket.id in typingUsers) {
+      delete typingUsers[socket.id];
+    }
 
-    users.push(nickname);
+    io.emit("set typing", typingUsers);
+  });
+
+  socket.on("add user", nickname => {
+    username = nickname || "Anonymous";
+
+    users.push(username);
 
     io.emit("set users", users);
   });
