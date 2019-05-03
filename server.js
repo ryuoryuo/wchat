@@ -50,11 +50,12 @@ io.on("connection", socket => {
     if (isTyping && !(socket.id in typingUsers)) {
       typingUsers[socket.id] = username;
     }
+
     if (!isTyping && socket.id in typingUsers) {
       delete typingUsers[socket.id];
     }
 
-    io.emit("set typing", typingUsers);
+    socket.broadcast.emit("set typing", typingUsers);
   });
 
   socket.on("add user", nickname => {
@@ -68,12 +69,18 @@ io.on("connection", socket => {
   socket.on("disconnect", () => {
     io.emit("chat message", `${username} disconnected`);
 
+    // deleting user from typingusers array
+    if (socket.id in typingUsers) {
+      delete typingUsers[socket.id];
+      socket.broadcast.emit("set typing", typingUsers);
+    }
+
     if (users.indexOf(username) !== -1) {
       const userIndex = users.indexOf(username);
 
       users.splice(userIndex, 1);
 
-      io.emit("set users", users);
+      socket.broadcast.emit("set users", users);
     }
   });
 });
