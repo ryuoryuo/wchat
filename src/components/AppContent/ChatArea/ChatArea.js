@@ -1,6 +1,8 @@
-import React from "react";
-
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+
+import { MessageInput } from "#/ui";
+
 
 const MessagesList = styled.div`
   width: 100%;
@@ -10,21 +12,35 @@ const MessagesList = styled.div`
   flex: 1;
 `;
 
-const MessageInput = styled.input`
-  width: 100%;
-  height: 40px;
-  box-sizing: border-box;
-`;
+export const ChatArea = () => {
+  const [inputValue, setInputValue] = useState("");
+  const [messageList, setMessageList] = useState([]);
 
-export const ChatArea = () => (
-  <>
-    <MessagesList>
-      <br />
-      some text
-      <br />
-      some text
-      <br />
-    </MessagesList>
-    <MessageInput />
-  </>
-);
+  useEffect(() => {
+    socket.on("chat message", msg => {
+      setMessageList(prevList => [...prevList, msg]);
+    });
+  }, []);
+
+  const sendMessage = event => {
+    event.preventDefault();
+    socket.emit("msg", inputValue);
+    setInputValue("");
+  };
+
+  return (
+    <>
+      <MessagesList>
+        {messageList.map(item => (
+          <>
+            {item}
+            <br />
+          </>
+        ))}
+      </MessagesList>
+      <form onSubmit={sendMessage}>
+        <MessageInput onChange={e => setInputValue(e.target.value)} value={inputValue} />
+      </form>
+    </>
+  );
+};
