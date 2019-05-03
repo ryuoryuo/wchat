@@ -1,10 +1,11 @@
 const Koa = require("koa");
 const socket = require("socket.io");
 
-const server = require("http").createServer(app.callback());
-
 
 const app = new Koa();
+
+const server = require("http").createServer(app.callback());
+
 
 const io = socket(server);
 
