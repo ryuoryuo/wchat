@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
-import { MessageInput } from "#/ui";
+import { Field } from "#/ui";
 
 
 const MessagesList = styled.div`
@@ -39,7 +39,7 @@ export const ChatArea = () => {
         ))}
       </MessagesList>
       <form onSubmit={sendMessage}>
-        <MessageInput onChange={e => setInputValue(e.target.value)} value={inputValue} />
+        <Field onChange={e => setInputValue(e.target.value)} value={inputValue} />
       </form>
     </>
   );

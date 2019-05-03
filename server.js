@@ -10,8 +10,14 @@ const server = require("http").createServer(app.callback());
 const io = socket(server);
 
 io.on("connection", socket => {
+  let userNickname = "Anonymous";
+
   socket.on("msg", msg => {
-    io.emit("chat message", msg);
+    io.emit("chat message", `${userNickname}: ${msg}`);
+  });
+
+  socket.on("setNickname", nickname => {
+    userNickname = nickname;
   });
 });
 
