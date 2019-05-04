@@ -35,7 +35,7 @@ io.on("connection", socket => {
   let username = "Anonymous";
 
   socket.on("msg", msg => {
-    const fullMessage = `${username}: ${msg}`;
+    const fullMessage = { username, message: msg, socketId: socket.id };
 
     io.emit("chat message", fullMessage);
 

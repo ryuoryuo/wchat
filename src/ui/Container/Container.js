@@ -3,10 +3,13 @@ import styled, { css } from "styled-components";
 
 export const Container = styled.div`
   display: flex;
+  position: relative;
 
-  ${p => p.flexDirection && `flex-direction: ${p.flexDirection}`}
+  ${p => p.flexDirection && `flex-direction: ${p.flexDirection}`};
 
-  ${p => p.flex && `flex: ${p.flex}`}
+  ${p => p.flex && `flex: ${p.flex}`};
+
+  ${p => p.zIndex && `z-index: ${p.zIndex}`};
 
   ${p =>
     p.height && Number.isInteger(p.height)
