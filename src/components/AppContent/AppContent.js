@@ -19,14 +19,15 @@ const ContentWrapper = styled.div`
 `;
 
 export const AppContent = () => {
-  const [isLogged, setIsLogged] = useState(false);
+  const [needLogin, setNeedLogin] = useState(false);
 
   useEffect(() => {
     const nickname = loadState("nickname");
 
     if (nickname) {
-      setIsLogged(true);
       socket.emit("add user", nickname);
+    } else {
+      setNeedLogin(true);
     }
   }, []);
 
@@ -36,11 +37,11 @@ export const AppContent = () => {
 
   const onLogin = nickname => {
     setNickname(nickname);
-    setIsLogged(true);
+    setNeedLogin(false);
     socket.emit("add user", nickname);
   };
 
-  if (!isLogged) return <LoginScreen onLogin={onLogin} />;
+  if (needLogin) return <LoginScreen onLogin={onLogin} />;
 
   return (
     <ContentWrapper>
