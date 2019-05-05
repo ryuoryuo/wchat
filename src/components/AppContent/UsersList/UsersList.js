@@ -16,9 +16,9 @@ export const UsersList = () => {
   useEffect(() => {
     fetchUsers();
 
-    socket.on("set users", users => {
-      setUsers(users);
-    });
+    // socket.on("set users", users => {
+    //   setUsers(users);
+    // });
   }, []);
 
   const fetchUsers = async () => {

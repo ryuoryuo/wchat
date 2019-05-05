@@ -22,12 +22,12 @@ const TypingSpan = styled.span`
 
 export const TypingStatus = () => {
   const [usersTyping, setUsersTyping] = useState([]);
-  const userSocket = socket.io.engine.id;
+  // const userSocket = socket.io.engine.id;
 
   useEffect(() => {
-    socket.on("set typing", users => {
-      updateTypingUsers(users);
-    });
+    // socket.on("set typing", users => {
+    //   updateTypingUsers(users);
+    // });
   }, []);
 
   const updateTypingUsers = users => {

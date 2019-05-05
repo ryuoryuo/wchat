@@ -4,7 +4,7 @@ import { Query } from "react-apollo";
 import { gql } from "apollo-boost";
 
 import { Header } from "./Header";
-import { ChatArea } from "./ChatArea";
+import { Chat } from "./Chat";
 import { UsersList } from "./UsersList";
 
 import { loadState, saveState } from "#/lib/localStorage";
@@ -27,7 +27,7 @@ export const AppContent = () => {
     const nickname = loadState("nickname");
 
     if (nickname) {
-      socket.emit("add user", nickname);
+      // socket.emit("add user", nickname);
     } else {
       setNeedLogin(true);
     }
@@ -40,7 +40,7 @@ export const AppContent = () => {
   const onLogin = nickname => {
     setNickname(nickname);
     setNeedLogin(false);
-    socket.emit("add user", nickname);
+    // socket.emit("add user", nickname);
   };
 
   if (needLogin) return <LoginScreen onLogin={onLogin} />;
@@ -58,7 +58,7 @@ export const AppContent = () => {
           <Header />
           <Container height="100%">
             <UsersList />
-            <ChatArea />
+            <Chat />
           </Container>
         </ContentWrapper>
       )}
