@@ -1,3 +1,7 @@
 type Query {
   hi: String
 }
+
+type Subscription {
+  messageAdded: String
+}
