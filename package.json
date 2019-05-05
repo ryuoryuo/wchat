@@ -4,13 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "concurrently \"nodemon server/server.js localhost 3000\" \"webpack-dev-server --hot\"",
+    "start": "concurrently \"webpack-dev-server --hot\" \"cd server && npm run start\"",
     "build": "webpack --mode production"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "apollo-boost": "^0.3.1",
+    "graphql": "^14.2.1",
     "react": "^16.8.6",
+    "react-apollo": "^2.5.5",
     "react-dom": "^16.8.6",
     "styled-components": "^4.2.0",
     "styled-normalize": "^8.0.6"
