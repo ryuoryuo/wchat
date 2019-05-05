@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import { Query } from "react-apollo";
+import { gql } from "apollo-boost";
 
 import { Header } from "./Header";
 import { ChatArea } from "./ChatArea";
@@ -44,12 +46,22 @@ export const AppContent = () => {
   if (needLogin) return <LoginScreen onLogin={onLogin} />;
 
   return (
-    <ContentWrapper>
-      <Header />
-      <Container height="100%">
-        <UsersList />
-        <ChatArea />
-      </Container>
-    </ContentWrapper>
+    <Query
+      query={gql`
+        {
+          hi
+        }
+      `}
+    >
+      {({ loading, error, data }) => (
+        <ContentWrapper>
+          <Header />
+          <Container height="100%">
+            <UsersList />
+            <ChatArea />
+          </Container>
+        </ContentWrapper>
+      )}
+    </Query>
   );
 };
