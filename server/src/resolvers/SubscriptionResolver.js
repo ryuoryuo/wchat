@@ -1,8 +1,8 @@
-import { pubsub, MSG_ADDED } from "../pubsub";
+import { pubsub } from "../pubsub";
 
 
 export default {
   messageAdded: {
-    subscribe: () => pubsub.asyncIterator([MSG_ADDED])
+    subscribe: () => pubsub.asyncIterator("messageAdded")
   }
 };

@@ -1,7 +1,26 @@
+type Message {
+  message: String
+  username: String
+}
+
 type Query {
-  hi: String
+  messages: [Message]
+}
+
+input InputData {
+  inputValue: String
+}
+
+type Mutation {
+  sendMessage(input: InputData): Boolean
 }
 
 type Subscription {
-  messageAdded: String
+  messageAdded: Message
+}
+
+schema {
+  query: Query
+  mutation: Mutation
+  subscription: Subscription
 }
