@@ -46,14 +46,6 @@ export const AppContent = () => {
   if (needLogin) return <LoginScreen onLogin={onLogin} />;
 
   return (
-    <Query
-      query={gql`
-        {
-          hi
-        }
-      `}
-    >
-      {({ loading, error, data }) => (
         <ContentWrapper>
           <Header />
           <Container height="100%">
@@ -61,7 +53,5 @@ export const AppContent = () => {
             <Chat />
           </Container>
         </ContentWrapper>
-      )}
-    </Query>
   );
 };

@@ -3,10 +3,19 @@ import styled from "styled-components";
 
 import { Field, Container, MessageCard } from "#/ui";
 
+import { Mutation } from "react-apollo";
+import gql from "graphql-tag";
+
 import { TypingStatus } from "./TypingStatus";
 
 import { useDebounce } from "#/lib/hooks";
 
+
+const SEND_MESSGAE = gql`
+  mutation($input: InputData!) {
+    sendMessage(input: $input)
+  }
+`;
 
 const MessagesList = styled.div`
   display: flex;
@@ -19,9 +28,8 @@ const MessagesList = styled.div`
   flex-direction: column;
 `;
 
-export const Chat = () => {
+export const Chat = ({ messages }) => {
   const [inputValue, setInputValue] = useState("");
-  const [messageList, setMessageList] = useState([]);
   const debouncedInputValue = useDebounce(inputValue, 2000);
   const listRef = useRef(null);
 
@@ -31,7 +39,7 @@ export const Chat = () => {
 
   useEffect(() => {
     updateListScroll();
-  }, [messageList]);
+  }, [messages]);
 
   const updateListScroll = () => {
     if (listRef.current) {
@@ -51,14 +59,14 @@ export const Chat = () => {
   //   }
   // };
 
-  const sendMessage = event => {
-    event.preventDefault();
+  // const sendMessage = event => {
+  //   event.preventDefault();
 
-    if (!inputValue.trim()) return;
+  //   if (!inputValue.trim()) return;
 
-    // socket.emit("msg", inputValue);
-    setInputValue("");
-  };
+  //   // socket.emit("msg", inputValue);
+  //   setInputValue("");
+  // };
 
   const onFieldChange = ({ target: { value } }) => {
     setInputValue(value);
@@ -69,14 +77,32 @@ export const Chat = () => {
   return (
     <Container flexDirection="column" flex={1}>
       <MessagesList ref={listRef}>
-        {messageList.map(item => (
+        {messages.map(item => (
           <MessageCard data={item} />
         ))}
         <TypingStatus />
       </MessagesList>
-      <form onSubmit={sendMessage}>
-        <Field onChange={onFieldChange} value={inputValue} />
-      </form>
+      <Mutation
+        mutation={SEND_MESSGAE}
+        onCompleted={({ sendMessage }) => {
+          if (sendMessage) {
+            console.log("TEST< URAA");
+          }
+        }}
+      >
+        {sendMessage => (
+          <form
+            onSubmit={event => {
+              event.preventDefault();
+              sendMessage({
+                variables: { input: { inputValue } },
+              });
+            }}
+          >
+            <Field onChange={onFieldChange} value={inputValue} />
+          </form>
+        )}
+      </Mutation>
     </Container>
   );
 };

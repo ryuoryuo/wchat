@@ -6,7 +6,5 @@ import { Chat as ChatView } from "./Chat";
 
 
 export const Chat = () => (
-  <ChatProvider>
-    <ChatView />
-  </ChatProvider>
+  <ChatProvider>{messages => <ChatView {...messages} meta />}</ChatProvider>
 );

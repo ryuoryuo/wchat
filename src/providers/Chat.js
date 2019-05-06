@@ -5,49 +5,66 @@ import { gql } from "apollo-boost";
 
 const MESSAGES_QUERY = gql`
   {
-    hi
-  }
-`;
-
-const MESSAGES_SUBSCRIPTION = gql`
-  subscription onMessageAdded {
-    messageAdded {
-      content
+    messages {
+      message
     }
   }
 `;
 
-const ChatProviderInner = ({ subscribeToNewMessages, children, ...props }) => {
+const MESSAGES_SUBSCRIPTION = gql`
+  subscription messageAdded {
+    messageAdded {
+      message
+    }
+  }
+`;
+
+const ChatProviderInner = ({
+  subscribeToNewMessages, children, messages, ...props
+}) => {
   useEffect(() => {
     subscribeToNewMessages();
   }, []);
 
-  return children;
+  console.log(messages, "NEW");
+
+  return children({ messages });
 };
 
 export const ChatProvider = ({ children }) => (
   <Query query={MESSAGES_QUERY}>
-    {({ subscribeToMore, ...result }) => (
-      <ChatProviderInner
-        {...result}
-        subscribeToNewMessages={() =>
-          subscribeToMore({
-            document: MESSAGES_SUBSCRIPTION,
-            updateQuery: (prev, { subscriptionData }) => {
-              if (!subscriptionData.data) return prev;
-              const newMessage = subscriptionData.data.messageAdded;
+    {({
+      subscribeToMore, data, loading, ...result
+    }) => {
+      if (loading || !data) return <div>Loading...</div>;
 
-              return Object.assign({}, prev, {
-                entry: {
-                  messageList: [newMessage, ...prev.entry.messageList],
-                },
-              });
-            },
-          })
-        }
-      >
-        {children}
-      </ChatProviderInner>
-    )}
+      return (
+        <ChatProviderInner
+          {...result}
+          messages={data.messages}
+          // messages={data.messages}
+          subscribeToNewMessages={() =>
+            subscribeToMore({
+              document: MESSAGES_SUBSCRIPTION,
+              updateQuery: (prev, { subscriptionData }) => {
+                if (!subscriptionData.data) return prev;
+                const newMessage = { message: subscriptionData.data.messageAdded.text };
+
+                return {
+                  messages: [newMessage],
+                };
+
+                return {
+                  // ...prev,
+                  messages: [...prev.messages, newMessage],
+                };
+              },
+            })
+          }
+        >
+          {children}
+        </ChatProviderInner>
+      );
+    }}
   </Query>
 );
