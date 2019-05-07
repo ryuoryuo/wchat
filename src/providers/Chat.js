@@ -15,6 +15,7 @@ const MESSAGES_SUBSCRIPTION = gql`
   subscription messageAdded {
     messageAdded {
       message
+      username
     }
   }
 `;
@@ -48,14 +49,9 @@ export const ChatProvider = ({ children }) => (
               document: MESSAGES_SUBSCRIPTION,
               updateQuery: (prev, { subscriptionData }) => {
                 if (!subscriptionData.data) return prev;
-                const newMessage = { message: subscriptionData.data.messageAdded.text };
+                const newMessage = subscriptionData.data.messageAdded;
 
                 return {
-                  messages: [newMessage],
-                };
-
-                return {
-                  // ...prev,
                   messages: [...prev.messages, newMessage],
                 };
               },

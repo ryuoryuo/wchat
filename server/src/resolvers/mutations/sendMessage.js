@@ -1,7 +1,7 @@
 import { pubsub } from "../../pubsub";
 
 
-export const sendMessage = (obj, args, context) => {
+export const sendMessage = (obj, args) => {
   pubsub.publish("messageAdded", {
     messageAdded: { message: args.input.inputValue }
   });
