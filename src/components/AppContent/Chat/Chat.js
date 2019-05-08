@@ -86,7 +86,7 @@ export const Chat = ({ messages }) => {
         mutation={SEND_MESSGAE}
         onCompleted={({ sendMessage }) => {
           if (sendMessage) {
-            console.log("TEST< URAA");
+            setInputValue("");
           }
         }}
       >
