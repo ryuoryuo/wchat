@@ -2,7 +2,7 @@ import { ApolloServer } from "apollo-server-koa";
 import { SubscriptionServer } from "subscriptions-transport-ws";
 import { execute, subscribe } from "graphql";
 import { makeExecutableSchema } from "graphql-tools";
-import { uniqid } from "uniqid";
+import uniqid from "uniqid";
 
 import app from "./app";
 import { endpointURL, isDevelopment } from "./utils/config";
@@ -26,9 +26,9 @@ const subscriptionServer = new SubscriptionServer(
     execute,
     subscribe,
     schema,
-    onConnect: () => {
-      return uniqid();
-    }
+    onConnect: () => ({
+      userId: uniqid()
+    })
     // onOperation: (message, params, webSocket) => {
     //   console.log(webSocket);
     //   return params;
