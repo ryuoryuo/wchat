@@ -20,14 +20,26 @@ const MESSAGES_SUBSCRIPTION = gql`
   }
 `;
 
+const CONNECTION_SUBSCRIPTION = gql`
+  subscription connectionMessage {
+    connectionMessage {
+      username
+      connected
+    }
+  }
+`;
+
 const ChatProviderInner = ({
-  subscribeToNewMessages, children, messages, ...props
+  subscribeToNewMessages,
+  subscribeToNewConnections,
+  children,
+  messages,
+  ...props
 }) => {
   useEffect(() => {
     subscribeToNewMessages();
+    subscribeToNewConnections();
   }, []);
-
-  console.log(messages, "NEW");
 
   return children({ messages });
 };
@@ -50,6 +62,25 @@ export const ChatProvider = ({ children }) => (
               updateQuery: (prev, { subscriptionData }) => {
                 if (!subscriptionData.data) return prev;
                 const newMessage = subscriptionData.data.messageAdded;
+
+                return {
+                  messages: [...prev.messages, newMessage],
+                };
+              },
+            })
+          }
+          subscribeToNewConnections={() =>
+            subscribeToMore({
+              document: CONNECTION_SUBSCRIPTION,
+              updateQuery: (prev, { subscriptionData }) => {
+                if (!subscriptionData.data) return prev;
+                const { username, connected, __typename } = subscriptionData.data.connectionMessage;
+
+                const message = connected
+                  ? `${username} just joined chat`
+                  : `${username} has left chat`;
+
+                const newMessage = { message, __typename };
 
                 return {
                   messages: [...prev.messages, newMessage],

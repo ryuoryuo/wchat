@@ -1,8 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import { Mutation } from "react-apollo";
+import { gql } from "apollo-boost";
 
 import { Field } from "#/ui";
 
+import { loadState } from "#/lib/localStorage";
+
+
+const CONNECTION_UPDATE = gql`
+  mutation($connection: ConnectionData!) {
+    connectionUpdate(connection: $connection)
+  }
+`;
 
 const LoginContainer = styled.div`
   height: 100vh;
@@ -25,23 +35,46 @@ const StyledForm = styled.form`
 
 export const LoginScreen = ({ onLogin }) => {
   const [inputValue, setInputValue] = useState("");
+  const [currentNickname, setCurrentNickname] = useState(null);
 
-  const onSubmit = event => {
-    event.preventDefault();
+  useEffect(() => {
+    const nickname = loadState("nickname");
 
-    onLogin(inputValue);
-  };
+    if (nickname) setCurrentNickname(nickname);
+  }, []);
 
   return (
-    <LoginContainer>
-      <ScreenTitle>Enter your username:</ScreenTitle>
-      <StyledForm onSubmit={onSubmit}>
-        <Field
-          value={inputValue}
-          onChange={event => setInputValue(event.target.value)}
-          placeholder="You can leave it empty"
-        />
-      </StyledForm>
-    </LoginContainer>
+    <Mutation mutation={CONNECTION_UPDATE}>
+      {connectionUpdate => {
+        if (currentNickname) {
+          connectionUpdate({
+            variables: { connection: { username: currentNickname, connected: true } },
+          });
+          onLogin(currentNickname);
+        }
+
+        const onSubmit = event => {
+          event.preventDefault();
+
+          connectionUpdate({
+            variables: { connection: { username: inputValue, connected: true } },
+          });
+          onLogin(inputValue);
+        };
+
+        return (
+          <LoginContainer>
+            <ScreenTitle>Enter your username:</ScreenTitle>
+            <StyledForm onSubmit={onSubmit}>
+              <Field
+                value={inputValue}
+                onChange={event => setInputValue(event.target.value)}
+                placeholder="You can leave it empty"
+              />
+            </StyledForm>
+          </LoginContainer>
+        );
+      }}
+    </Mutation>
   );
 };

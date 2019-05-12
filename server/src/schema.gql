@@ -1,6 +1,11 @@
 type Message {
-  message: String
+  message: String!
   username: String
+}
+
+type Connection {
+  username: String!
+  connected: Boolean!
 }
 
 type Query {
@@ -11,12 +16,19 @@ input InputData {
   inputValue: String
 }
 
+input ConnectionData {
+  username: String!
+  connected: Boolean!
+}
+
 type Mutation {
   sendMessage(input: InputData): Boolean
+  connectionUpdate(connection: ConnectionData): Boolean
 }
 
 type Subscription {
   messageAdded: Message
+  connectionMessage: Connection
 }
 
 schema {

@@ -1,5 +1,5 @@
 import messages from "./queries/messages";
-import { sendMessage } from "./mutations";
+import { sendMessage, connectionUpdate } from "./mutations";
 import SubscriptionResolver from "./SubscriptionResolver";
 
 
@@ -8,7 +8,8 @@ export default {
     messages
   },
   Mutation: {
-    sendMessage
+    sendMessage,
+    connectionUpdate
   },
   Subscription: SubscriptionResolver
 };

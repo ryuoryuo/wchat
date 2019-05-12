@@ -7,9 +7,14 @@ import { createGlobalStyle } from "styled-components";
 import { WebSocketLink } from "apollo-link-ws";
 import { split } from "apollo-link";
 import { getMainDefinition } from "apollo-utilities";
+import { SubscriptionClient } from "subscriptions-transport-ws";
 
 import { AppContent } from "./components/AppContent";
 
+
+const subscriptionClient = new SubscriptionClient("ws://localhost:3000/graphql", {
+  reconnect: true,
+});
 
 const httpLink = new HttpLink({
   uri: "http://localhost:3000/graphql",
