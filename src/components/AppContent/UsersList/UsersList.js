@@ -13,14 +13,6 @@ const UsersContainer = styled.div`
 export const UsersList = () => {
   const [users, setUsers] = useState([]);
 
-  useEffect(() => {
-    fetchUsers();
-
-    // socket.on("set users", users => {
-    //   setUsers(users);
-    // });
-  }, []);
-
   return (
     <UsersContainer>
       {users.map(item => (
